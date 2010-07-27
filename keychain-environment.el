@@ -1,12 +1,15 @@
 ;;; keychain-environment.el --- Loads keychain environment variables into emacs
  
 ;; Copyright (C) 2008,2009 Paul Tipper
+;;               2010 Michael Markert
  
 ;; Author:  Paul Tipper <bluefoo at googlemail dot com>
+;;          Michael Markert <markert.michael at googlemail dot com>
+
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
 
-;; Version: 1.0.1
+;; Version: 1.1.0
 
 ;; This file is not part of GNU Emacs.
  
@@ -59,26 +62,24 @@
 
 ;;; Code: 
 
-(if (not (boundp 'keychain-ssh-file))
-    (defvar keychain-ssh-file  (concat (getenv "HOME")
-                                               "/.keychain/" 
-                                               (car (split-string system-name 
-                                                                  "\\." 
-                                                                  t))
-                                               "-sh")
-      "Stores the location of the keychain ssh file to load.  Normally
-found in the '$HOME/.keychain' directory and called
-'$HOSTNAME-sh'."))
-(if (not (boundp 'keychain-gpg-file))
-    (defvar keychain-gpg-file  (concat (getenv "HOME")
-                                               "/.keychain/" 
-                                               (car (split-string system-name 
-                                                                  "\\." 
-                                                                  t))
-                                               "-sh-gpg")
-      "Stores the location of the keychain gpg file to load.  Normally
-found in the '$HOME/.keychain' directory and called
-'$HOSTNAME-sh-gpg'."))
+(defconst keychain-dir (concat (getenv "HOME") "/.keychain/" )
+  "Location of keychain directory. Normally `$HOME/.keychain'")
+
+(let ((hostname (car (split-string system-name "\\." t)))
+      (ssh-postfix "-sh")
+      (gpg-postfix "-sh-gpg"))
+  (if (not (boundp 'keychain-ssh-file))
+      (defvar keychain-ssh-file  (concat keychain-dir
+                                         hostname
+                                         ssh-postfix)
+        "Stores the location of the keychain ssh file to load.
+Normally found in the `keychain-dir' and called '$HOSTNAME-sh'."))
+  (if (not (boundp 'keychain-gpg-file))
+      (defvar keychain-gpg-file  (concat keychain-dir
+                                         hostname
+                                         gpg-postfix)
+        "Stores the location of the keychain gpg file to load.
+Normally found in the `keychain-dir' and called '$HOSTNAME-sh-gpg'.")))
 
 
 ;; Really there should be an easier method of doing this surely?
