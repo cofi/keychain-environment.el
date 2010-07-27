@@ -31,7 +31,7 @@
 ;; longer than a single login seession.
 ;; 
 ;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses it for
-;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO= variables, placing these
+;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO variables, placing these
 ;; into the environment of Emacs.
 ;;
 ;; This is useful for situations where you are running Emacs under X, not
@@ -105,9 +105,8 @@ found in the '$HOME/.keychain' directory and called
         data)))
 
 (defun refresh-keychain-environment ()
-  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK
-and SSH_AGENT_PID variables into the environment and returns them
-as a list."
+  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
+and GPG_AGENT variables into the environment and returns them as a list."
   (interactive)
   (let* ((ssh-data (read-file keychain-ssh-file))
          (gpg-data (read-file keychain-gpg-file))
