@@ -9,7 +9,7 @@
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
 
-;; Version: 1.1.0
+;; Version: 1.1.1
 
 ;; This file is not part of GNU Emacs.
  
@@ -53,7 +53,8 @@
 ;;
 ;; If you want to customise the location of the keychain file then use this:
 ;;
-;;   (setq keychain-environment-file "~/path-to-file")
+;;   (setq keychain-ssh-file "~/path-to-file")
+;;   (setq keychain-gpg-file "~/path-to-file")
  
 ;;; History:
 ;; 2008-12-18 Initial development.
