@@ -1,11 +1,11 @@
 ;;; keychain-environment.el --- Loads keychain environment variables into emacs
  
 ;; Copyright (C) 2008,2009 Paul Tipper
-;;               2010 Michael Markert
+;;               2010 Michael "cofi" Markert
+;; Time-stamp: <2010-08-10 03:32:26 cofi>
  
 ;; Author:  Paul Tipper <bluefoo at googlemail dot com>
 ;;          Michael Markert <markert.michael at googlemail dot com>
-
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
 
@@ -82,29 +82,13 @@ Normally found in the `keychain-dir' and called '$HOSTNAME-sh'."))
         "Stores the location of the keychain gpg file to load.
 Normally found in the `keychain-dir' and called '$HOSTNAME-sh-gpg'.")))
 
-
-;; Really there should be an easier method of doing this surely?
-(if (not (fboundp 'read-file))
-    (defun read-file (filename)
+(if (not (fboundp 'keychain/read-file))
+    (defun keychain/read-file (filename)
       "Takes a filename, reads the data from it and returns it as a string"
-      
-      (let* ((real-filename (expand-file-name filename))
-             (visited (find-buffer-visiting real-filename))
-             (orig-buffer (current-buffer))
-             (buf (find-file-noselect real-filename))
-             (data (save-excursion
-                     (set-buffer buf)
-                     (let ((data (buffer-substring-no-properties (point-min) 
-                                                                 (point-max))))
-                       (set-buffer orig-buffer)
-                       data))))
-        
-        ;; Only kill the buffer if we didn't have a copy when we started
-        (if (null visited)
-            (kill-buffer buf))
-        
-        ;; And return the data.
-        data)))
+      (let ((real-filename (expand-file-name filename)))
+        (with-temp-buffer
+          (insert-file-contents real-filename)
+          (buffer-string)))))
 
 (defun refresh-keychain-environment ()
   "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
