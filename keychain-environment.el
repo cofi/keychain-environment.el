@@ -29,13 +29,13 @@
 ;;; Commentary: 
 ;; 
 ;; Designed for use with Keychain, see:
-;; (http://www.gentoo.org/proj/en/keychain/) a tool for loading the
-;; SSH Agent and keeping it running and accessible on a machine for
-;; longer than a single login seession.
+;; http://www.funtoo.org/en/security/keychain/intro/ a tool for loading the SSH
+;; Agent and keeping it running and accessible on a machine for longer than a
+;; single login session.
 ;; 
 ;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses it for
-;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO variables, placing these
-;; into the environment of Emacs.
+;; the SSH_AUTH_SOCK, SSH_AUTH_PID and "$HOME/.keychain/$HOSTNAME-sh-gpg" for
+;; GPG_AGENT_INFO variables, placing these into the environment of Emacs.
 ;;
 ;; This is useful for situations where you are running Emacs under X, not
 ;; directly from a terminal, and its inheriting its environment from the
@@ -61,6 +61,8 @@
 ;; 2009-02-25 Fixed bug with system-name being evaluated to the full hostname
 ;; 2010-07-27 Added GPG_AGENT support.
 ;; 2010-08-10 Changed namingscheme.
+
+;; Newer versions can be found at http://github.com/cofi/keychain-environment.el
 
 ;;; Code: 
 
