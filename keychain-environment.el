@@ -2,14 +2,14 @@
  
 ;; Copyright (C) 2008,2009 Paul Tipper
 ;;               2010 Michael "cofi" Markert
-;; Time-stamp: <2010-08-10 03:42:38 cofi>
+;; Time-stamp: <2010-08-10 04:23:34 cofi>
  
 ;; Author:  Paul Tipper <bluefoo at googlemail dot com>
 ;;          Michael Markert <markert.michael at googlemail dot com>
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
 
-;; Version: 1.2
+;; Version: 1.3
 
 ;; This file is not part of GNU Emacs.
  
@@ -51,39 +51,55 @@
 ;;   (require 'keychain-environment)
 ;;   (eval-after-load "keychain-environment" '(keychain/refresh))
 ;;
-;; If you want to customise the location of the keychain file then use this:
+;; If you want to customize keychain, use 
 ;;
-;;   (setq keychain/ssh-file "~/path-to-file")
-;;   (setq keychain/gpg-file "~/path-to-file")
+;; (customize-group 'keychain)
  
 ;;; History:
 ;; 2008-12-18 Initial development.
 ;; 2009-02-25 Fixed bug with system-name being evaluated to the full hostname
 ;; 2010-07-27 Added GPG_AGENT support.
 ;; 2010-08-10 Changed namingscheme.
+;;            Added customize support.
 
 ;; Newer versions can be found at http://github.com/cofi/keychain-environment.el
 
 ;;; Code: 
 
-(defconst keychain/dir (concat (getenv "HOME") "/.keychain/" )
-  "Location of keychain directory. Normally `$HOME/.keychain'")
+(defvar keychain/ssh-postfix "-sh"
+  "Suffix of keychain ssh file")
+(defvar keychain/gpg-postfix "-sh-gpg"
+  "Suffix of keychain gpg file")
 
-(let ((hostname (car (split-string system-name "\\." t)))
-      (ssh-postfix "-sh")
-      (gpg-postfix "-sh-gpg"))
-  (if (not (boundp 'keychain/ssh-file))
-      (defvar keychain/ssh-file  (concat keychain/dir
-                                         hostname
-                                         ssh-postfix)
-        "Stores the location of the keychain ssh file to load.
-Normally found in the `keychain/dir' and called '$HOSTNAME-sh'."))
-  (if (not (boundp 'keychain/gpg-file))
-      (defvar keychain/gpg-file  (concat keychain/dir
-                                         hostname
-                                         gpg-postfix)
-        "Stores the location of the keychain gpg file to load.
-Normally found in the `keychain/dir' and called '$HOSTNAME-sh-gpg'.")))
+(defgroup keychain nil 
+  "Keychain integration."
+  :tag "Keychain"
+  :link '(url-link "Homepage" "http://github.com/cofi/keychain-environment.el")
+  :prefix "keychain/"
+  :group 'convenience)
+
+(defcustom keychain/dir (concat (getenv "HOME") "/.keychain/" )
+  "Location of keychain directory. Normally `$HOME/.keychain'"
+  :type 'string
+  :group 'keychain)
+
+(defcustom keychain/ssh-file  (concat keychain/dir
+                                      ;; hostname
+                                      (car (split-string system-name "\\." t))
+                                      keychain/ssh-postfix)
+  "Stores the location of the keychain ssh file to load.
+Normally found in the `keychain/dir' and called '$HOSTNAME-sh'."
+  :type 'string
+  :group 'keychain)
+
+(defcustom keychain/gpg-file  (concat keychain/dir
+                                      ;; hostname
+                                      (car (split-string system-name "\\." t))
+                                      keychain/gpg-postfix)
+  "Stores the location of the keychain gpg file to load.
+Normally found in the `keychain/dir' and called '$HOSTNAME-sh-gpg'."
+  :type 'string
+  :group 'keychain)
 
 (if (not (fboundp 'keychain/read-file))
     (defun keychain/read-file (filename)
